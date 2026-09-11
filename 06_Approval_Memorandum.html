@@ -1,0 +1,46 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Approval Memorandum</title><style>
+:root{
+  --ink:#303238; --muted:#7e838a; --line:#8a8e92; --soft:#e8eaec;
+  --navy:#3d5269; --paper:#fff; --screen:#eef1f4; --purple:#cbc1d9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--screen); color:var(--ink);
+  font-family: Arial, Tahoma, "Noto Sans Thai", sans-serif;
+}
+.toolbar{
+  position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid #d6d9dc;
+  display:flex;gap:8px;align-items:center;padding:10px 14px;
+}
+.toolbar button,.toolbar a{
+  border:1px solid #adb3b9;background:#fff;color:#222;padding:7px 12px;
+  border-radius:6px;text-decoration:none;font-size:13px;cursor:pointer;
+}
+.toolbar .primary{background:#2f3d4b;border-color:#2f3d4b;color:#fff}
+.page{
+  width:210mm;min-height:297mm;margin:15px auto;background:#fff;
+  box-shadow:0 2px 16px rgba(0,0,0,.12);position:relative;
+}
+.edit,.line-edit{outline:none;min-height:1em}
+.edit:focus,.line-edit:focus,input:focus,textarea:focus{background:#fff9d8}
+.line-edit{display:inline-block;border-bottom:1px dotted #777;min-width:25mm;padding:0 2px}
+.check{display:inline-flex;width:4.2mm;height:4.2mm;border:1px solid #555;align-items:center;justify-content:center;vertical-align:-1px;margin-right:2px;cursor:pointer;font-size:12px;line-height:1}
+.check.checked:after{content:"×";font-weight:700}
+.signature-line{height:18mm;border-bottom:1px solid #777;position:relative}
+.sig-preview{position:absolute;left:50%;bottom:1px;transform:translateX(-50%);max-height:17mm;max-width:95%}
+.sig-upload{font-size:8px;margin-top:2px}
+@media print{@page{size:A4;margin:0}body{background:#fff}.toolbar,.sig-upload{display:none!important}.page{margin:0;box-shadow:none}.edit:focus,.line-edit:focus,input:focus,textarea:focus{background:transparent}}
+.approval{padding:13mm 22mm 12mm;font-size:10px;color:#5d5d5d}
+.turtle-logo{width:76mm;height:16mm;object-fit:contain;object-position:left center;margin-bottom:4mm}
+.ap-title{text-align:center;font-size:14px;font-weight:700;color:#40556d;border-bottom:2px solid #40556d;padding-bottom:2px}
+.ap-meta{width:100%;border-collapse:collapse;margin-top:4mm}
+.ap-meta td{border:1px solid #c2c2c2;padding:4px 6px}.ap-meta .lab{font-weight:700;width:14%}
+.ap-section{margin-top:7mm}.ap-section h3{margin:0 0 2mm;font-size:12px;color:#40556d}
+.ap-opts{display:grid;grid-template-columns:1fr 1fr 1.4fr;row-gap:2mm;padding-left:2mm}
+.ap-attach{display:flex;gap:6px;align-items:flex-end;margin-top:3mm}
+.ap-lines{min-height:15mm;line-height:6mm;background:repeating-linear-gradient(to bottom,transparent 0,transparent 5.8mm,#cfcfcf 6mm);padding:0 2mm}
+.ap-terms{width:100%;border-collapse:collapse}.ap-terms td{border:1px solid #b8b8b8;padding:4px 7px}.ap-terms td:first-child{width:33mm;font-weight:700}
+.ap-auth{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8mm}.ap-auth .role{font-weight:700;min-height:15mm}.ap-auth .signature-line{height:21mm}
+.ap-footer{position:absolute;bottom:8mm;left:22mm;right:22mm;border-top:1px solid #ddd;color:#aaa;font-size:7.5px;padding-top:2px;display:flex;justify-content:space-between;font-style:italic}
+</style></head><body><div class="toolbar"><a href="index.html">Documents</a><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="clearForm()">Clear</button></div><main class="page approval"><div style="height:16mm"></div><div class="ap-title">TURTLE23 Co.,Ltd&nbsp;&nbsp;|&nbsp;&nbsp;APPROVAL MEMORANDUM</div><table class="ap-meta"><tr><td class="lab">Memo No.</td><td class="edit" contenteditable="true">-</td><td class="lab">BU</td><td class="edit" contenteditable="true">TURTLE23</td></tr><tr><td class="lab">Date</td><td class="edit" contenteditable="true">1 / 07 / 2026</td><td class="lab">Subject</td><td class="edit" contenteditable="true">Approval for Laptop Rental Agreement</td></tr></table><section class="ap-section"><h3>1. PURPOSE OF APPROVAL</h3><div class="ap-opts"><span><i class="check" onclick="ck(this)"></i>CapEx / Investment</span><span><i class="check" onclick="ck(this)"></i>OpEx / Budget</span><span><i class="check" onclick="ck(this)"></i>POA / Contractual Signing</span><span><i class="check" onclick="ck(this)"></i>Announcement</span><span><i class="check" onclick="ck(this)"></i>HR</span><span><i class="check checked" onclick="ck(this)"></i>Others: <span class="line-edit edit" contenteditable="true"></span></span></div><div class="ap-attach"><b>Attached Document:</b><span class="line-edit edit" style="flex:1" contenteditable="true">Quotation/ Contract computer rental agreement</span></div></section><section class="ap-section"><h3>2. BACKGROUND*</h3><div class="ap-lines edit" contenteditable="true">TURTLE23 intends to rent laptops for a period of 36 months to replace the existing units whose rental contracts have expired and to ensure continuity of business operations.</div></section><section class="ap-section"><h3>3. KEY TERMS</h3><table class="ap-terms"><tr><td>Contract</td><td class="edit" contenteditable="true">Laptop rental for replacement</td></tr><tr><td>Supplier</td><td class="edit" contenteditable="true">The Enterprise Resources Training Co., Ltd.</td></tr><tr><td>Monthly Rental</td><td class="edit" contenteditable="true">6,750/month</td></tr><tr><td>Period</td><td class="edit" contenteditable="true">1 Jun 2026 – 31 May 2029</td></tr><tr><td>Scope of Work</td><td class="edit" contenteditable="true">Laptop rental with standard maintenance support</td></tr></table></section><section class="ap-section"><h3>4. RECOMMENDATION / CONCLUSION</h3><div class="ap-lines edit" contenteditable="true">Approval is therefore requested to sign the laptop rental agreement with The Enterprise Resources Training Co., Ltd. to replace the units with expired rental contracts and to ensure continuity of business operations.</div></section><section class="ap-section"><h3>5. AUTHORIZATION</h3><div class="ap-auth"><div><div class="role">Prepared by<br><span style="font-weight:400">[Department Name]</span></div><div class="signature-line"><img id="ap1" class="sig-preview"></div><input class="sig-upload" type="file" accept="image/*" onchange="sig(event,'ap1')"><div>Signature / Date</div><div class="edit" contenteditable="true">Name: Kawinphop Champee</div><div class="edit" contenteditable="true">Contact Number: 087-0021857</div></div><div><div class="role">Reviewed &amp; Acknowledged by<br><span style="font-weight:400">Department Head/Preparer’s Supervisor</span></div><div class="signature-line"><img id="ap2" class="sig-preview"></div><input class="sig-upload" type="file" accept="image/*" onchange="sig(event,'ap2')"><div>Signature / Date</div><div class="edit" contenteditable="true">Name: Thotsaporn Phupha</div></div><div><div class="role">Approved by<br><span style="font-weight:400">Company’s/Project’s Authorized Person</span></div><div class="signature-line"><img id="ap3" class="sig-preview"></div><input class="sig-upload" type="file" accept="image/*" onchange="sig(event,'ap3')"><div>Signature / Date</div><div class="edit" contenteditable="true">Name: Thanongsak Chupongwattana</div></div></div></section><div class="ap-footer"><span>This document is classified as INTERNAL. Do not distribute outside the company without prior authorization.</span><span>Version 2026.06.01</span></div></main><script>function ck(el){el.classList.toggle('checked')}function sig(ev,id){const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>document.getElementById(id).src=e.target.result;r.readAsDataURL(f)}function clearForm(){document.querySelectorAll('[contenteditable=true]').forEach(e=>e.innerHTML='');document.querySelectorAll('.check.checked').forEach(e=>e.classList.remove('checked'));document.querySelectorAll('.sig-preview').forEach(e=>e.removeAttribute('src'));document.querySelectorAll('input[type=file]').forEach(e=>e.value='')}</script></body></html>
