@@ -1,0 +1,126 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LG16 ใบคำขอเอกสารสำคัญของบริษัทฯ</title><style>
+*{box-sizing:border-box}
+:root{--ink:#333;--line:#747474;--light:#e9e9e9;--paper:#fff;--screen:#eef1f4}
+html,body{margin:0;padding:0}
+body{background:var(--screen);font-family:Tahoma,Arial,"Noto Sans Thai",sans-serif;color:var(--ink)}
+.toolbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #d0d0d0;padding:8px 12px;display:flex;gap:8px}
+.toolbar button{border:1px solid #a8afb5;background:#fff;border-radius:5px;padding:7px 11px;cursor:pointer}
+.toolbar .primary{background:#334454;color:white;border-color:#334454}
+.page{width:210mm;min-height:297mm;margin:14px auto;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.13);padding:14mm 12mm 10mm}
+.top{display:grid;grid-template-columns:24mm 1fr 52mm;align-items:end;margin-bottom:1mm}
+.logo{width:17mm;height:22mm;object-fit:contain;align-self:start}
+.title{text-align:center;font-size:16px;font-weight:700;line-height:1.2;padding-bottom:1.5mm}
+.legal-only{text-align:right;font-size:6.8px;font-style:italic;padding-bottom:1.5mm;white-space:nowrap}
+.frame{border:1px solid var(--line);font-size:9.5px}
+.topmeta{display:grid;grid-template-columns:23mm 1fr 28mm 1fr 33mm 23mm;background:linear-gradient(#f3f3f3,#e8e8e8);border-bottom:1px solid var(--line);min-height:7mm}
+.topmeta>div{display:flex;align-items:center;padding:1mm 2mm;border-right:1px solid var(--line)}
+.topmeta>div:last-child{border-right:0}
+.datebar{display:grid;grid-template-columns:1fr 16mm 54mm;min-height:7mm;border-bottom:0}
+.datebar>div{display:flex;align-items:center;padding:1mm 2mm;border-right:1px solid var(--line)}
+.datebar>div:last-child{border-right:0}
+.datebar .datebox{background:linear-gradient(#f4f4f4,#e9e9e9)}
+.under{border-bottom:1px solid #777;min-height:5mm;display:inline-block;outline:none}
+.editline{flex:1;border-bottom:1px solid #777;min-height:5mm;padding:0 1mm;outline:none}
+.line{display:flex;align-items:flex-end;gap:1.5mm;min-height:6.5mm;padding:0 2.5mm;font-size:9.5px}
+.line.tight{min-height:5.7mm}
+.line .label{white-space:nowrap}
+.center{text-align:center}
+.section-title{font-weight:700;text-decoration:underline;padding:2mm 2.5mm 1mm;font-size:10px}
+.checkbox{width:4.7mm;height:4.7mm;border:1px solid #555;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;vertical-align:middle}
+.checkbox.checked::after{content:"/";font-size:12px;font-weight:700;transform:rotate(11deg)}
+.doclist{margin:1mm 2mm 1mm}
+.docrow{display:grid;grid-template-columns:5.8mm 7mm minmax(38mm,1fr) 40mm 31mm 14mm 10mm 7mm;align-items:center;min-height:7.1mm;font-size:9.3px}
+.docrow .checkcell{height:100%;border:1px solid #777;border-bottom:0;display:flex;align-items:center;justify-content:center;cursor:pointer}.docrow .checkcell.checked::after{content:'/';font-size:12px;font-weight:700;transform:rotate(11deg)}
+.docrow:last-of-type .checkcell{border-bottom:1px solid #777}
+.docrow>div{padding:0 1mm}
+.docrow .qtylabel{text-align:right}
+.qtyfield{border-bottom:1px solid #777;min-height:4.7mm;text-align:center;outline:none}
+.unit{text-align:left;padding-left:0!important}
+.docrow.long{min-height:10.5mm;align-items:start;padding-top:.5mm}
+.otherline{display:flex;align-items:flex-end;gap:1mm;padding:0 7mm 1mm;font-size:9.3px}
+.closing{padding:1.3mm 7mm 0;font-size:9.3px}
+.requester{text-align:center;font-size:9.1px;padding:3mm 2mm 1.5mm}
+.requester .respect{margin-bottom:5mm}
+.signline{width:48mm;height:13mm;border-bottom:1px solid #777;margin:0 auto;position:relative}
+.signline .sig-preview{position:absolute;left:50%;bottom:0;transform:translateX(-50%);max-width:46mm;max-height:17mm;object-fit:contain}
+.name-line{width:55mm;min-height:5.5mm;border-bottom:1px solid #777;margin:0 auto;padding-top:1mm;outline:none}
+.sig-upload{font-size:7px;margin-top:1mm;max-width:48mm}
+.sectionbar{position:relative;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(#f1f1f1,#e7e7e7);font-weight:700;text-align:center;min-height:7mm;padding:1.2mm 3mm;font-size:9.6px}
+.sectionbar .num{position:absolute;left:1mm;font-weight:400}
+.approval{position:relative;min-height:37mm;padding:2mm 3mm;font-size:9.2px}
+.approval-options{width:55mm;line-height:1.9;position:relative;z-index:2}
+.approval-option{display:flex;align-items:flex-start;gap:1mm}
+.approval .signature-center{position:absolute;left:50%;bottom:1.5mm;transform:translateX(-50%);width:58mm;text-align:center}
+.approval .signature-center .signline{height:15mm;width:50mm}
+.approval .signature-center .name-line{width:58mm}.approval .signature-center .sig-upload{position:absolute;right:-35mm;bottom:2mm;width:32mm}
+.legal{min-height:52mm;padding:2mm 3mm;font-size:9.2px}
+.legal-date{display:flex;justify-content:flex-end;align-items:flex-end;gap:2mm}
+.legal-copy{line-height:1.8;margin:2mm 7mm 0}
+.legal-center-lines{width:55mm;margin:9mm auto 0}
+.legal-center-lines div{height:6mm;border-bottom:1px solid #777}
+.note{display:flex;align-items:flex-end;gap:2mm;margin-top:3mm}
+.dots{flex:1;border-bottom:1px dotted #777;min-height:4mm;outline:none}
+.receive{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:7mm;align-items:end;margin-top:4mm}
+.receive>div{display:flex;align-items:flex-end;gap:1mm}
+.footnotes{font-size:8px;line-height:1.55;padding:1mm 2.5mm 1.5mm}
+.review-type{display:flex;gap:2mm;align-items:center;flex-wrap:wrap;padding:0 2.5mm 1mm;font-size:9.2px}
+.numbered{display:flex;align-items:flex-end;gap:1.5mm;padding:0 2.5mm;min-height:6.2mm;font-size:9.3px}
+.numbered .n{width:4mm;flex:0 0 4mm}
+.numbered .label{white-space:nowrap}
+.multi-rule{margin:0 2.5mm;height:12.5mm;background:repeating-linear-gradient(to bottom,transparent 0,transparent 6mm,#888 6.1mm,#888 6.2mm);outline:none;padding:0 1mm}
+.attach-rule{margin:0 2.5mm;height:7mm;border-bottom:1px solid #777;text-align:center;padding-top:1mm;outline:none}
+.long-approval{position:relative;min-height:43mm;padding:1.5mm 3mm;font-size:8.7px}
+.long-approval .approval-options{width:auto;padding-right:2mm}
+.long-approval .approval-option:first-child{line-height:1.5}
+.long-approval .signature-center{position:absolute;left:50%;bottom:1.4mm;transform:translateX(-50%);width:58mm;text-align:center}
+.long-approval .signature-center .signline{height:14mm;width:50mm}
+.long-approval .signature-center .name-line{width:58mm}.long-approval .signature-center .sig-upload{position:absolute;right:-35mm;bottom:2mm;width:32mm}
+[contenteditable="true"]:focus{background:#fff7c9}
+@media print{
+ @page{size:A4;margin:0}
+ body{background:#fff}
+ .toolbar{display:none!important}
+ .page{margin:0;box-shadow:none;width:210mm;min-height:297mm}
+ .sig-upload{display:none!important}
+ [contenteditable="true"]:focus{background:transparent}
+}
+</style></head>
+<body><div class="toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="clearForm()">Clear Form</button></div><main class="page">
+<div class="top">
+ <div style="width:17mm;height:22mm"></div>
+ <div class="title">ใบคำขอเอกสารสำคัญของบริษัทฯ</div>
+ <div class="legal-only">For Legal Only : Received Date__________</div>
+</div>
+<div class="frame">
+ <div class="topmeta">
+  <div>1 ชื่อหน่วยงาน</div><div contenteditable="true">IT</div>
+  <div>งานของบริษัท</div><div contenteditable="true">Turtle 23</div>
+  <div>เบอร์โทรภายใน</div><div contenteditable="true">8961</div>
+ </div>
+ <div class="datebar"><div></div><div style="justify-content:flex-end">วันที่</div><div class="datebox center" contenteditable="true">5-Jun-26</div></div>
+ <div class="section-title">เรียนฝ่ายกฎหมาย</div>
+ <div class="line tight"><span class="label">เนื่องจากข้าพเจ้า</span><span class="editline center" contenteditable="true">กวินภพ จำปี</span><span class="label">พนักงานแผนก/ฝ่าย</span><span class="editline center" contenteditable="true">IT</span><span class="label">เบอร์โทรภายใน</span><span class="editline center" contenteditable="true">8961</span></div>
+ <div class="line tight"><span class="label">ต้องการเอกสารตามรายละเอียดด้านล่างนี้เพื่อ</span><span class="editline center" contenteditable="true">ใช้ประกอบการเช่า Laptop จำนวน 3 เครื่อง</span></div>
+ <div class="line tight"><span class="editline center" contenteditable="true">บริษัท ดิเอ็นเตอร์ไพรส์รีซอร์สเทรนนิ่ง จำกัด</span></div>
+ <div class="doclist">
+  <div class="docrow"><div class="checkcell checked" onclick="toggleCheck(this)"></div><div>1.</div><div>สำเนาหนังสือรับรองบริษัท</div><div class="qtyfield" contenteditable="true">ไม่เกิน 180 วัน</div><div>และรับรองสำเนาถูกต้อง</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true">1</div><div class="unit">ชุด</div></div>
+  <div class="docrow"><div class="checkcell" onclick="toggleCheck(this)"></div><div>2.</div><div>หนังสือมอบอำนาจให้ <span class="under" contenteditable="true" style="min-width:39mm"></span></div><div></div><div>กระทำแทนบริษัท</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true"></div><div class="unit">ชุด</div></div>
+  <div class="docrow"><div class="checkcell checked" onclick="toggleCheck(this)"></div><div>3.</div><div>สำเนาบัตรประชาชนและทะเบียนบ้านของ</div><div class="qtyfield" contenteditable="true">นายกวิน ภาษุงพงษ์</div><div>และรับรองสำเนาถูกต้อง</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true">1</div><div class="unit">ชุด</div></div>
+  <div class="docrow"><div class="checkcell checked" onclick="toggleCheck(this)"></div><div>4.</div><div>สำเนาบัตรประชาชนและทะเบียนบ้านของ</div><div class="qtyfield" contenteditable="true">นายธีรสัน กฤตลักษณ์</div><div>และรับรองสำเนาถูกต้อง</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true">1</div><div class="unit">ชุด</div></div>
+  <div class="docrow"><div class="checkcell" onclick="toggleCheck(this)"></div><div>5.</div><div>สำเนาหนังสือเดินทางของ</div><div class="qtyfield" contenteditable="true"></div><div>และรับรองสำเนาถูกต้อง</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true"></div><div class="unit">ชุด</div></div>
+  <div class="docrow"><div class="checkcell" onclick="toggleCheck(this)"></div><div>6.</div><div>สำเนาบัญชีรายชื่อผู้ถือหุ้น (แบบ บอจ.5)</div><div></div><div>และรับรองสำเนาถูกต้อง</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true"></div><div class="unit">ชุด</div></div>
+  <div class="docrow"><div class="checkcell checked" onclick="toggleCheck(this)"></div><div>7.</div><div>สำเนาใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div><div class="qtyfield" contenteditable="true">ของสาขาที่ 1</div><div>และรับรองสำเนาถูกต้อง</div><div class="qtylabel">จำนวน</div><div class="qtyfield" contenteditable="true">1</div><div class="unit">ชุด</div></div>
+  <div class="docrow long"><div class="checkcell" onclick="toggleCheck(this)"></div><div>8.</div><div style="grid-column:3 / 6">สำเนาบัตรผู้รับมอบอำนาจ / รายการเอกสารเพื่อประกอบการดำเนินการ ดังนี้<div class="under" contenteditable="true" style="display:block;width:100%;margin-top:1mm"></div><div class="under" contenteditable="true" style="display:block;width:100%;margin-top:1mm"></div></div><div class="qtylabel" style="align-self:center">จำนวน</div><div class="qtyfield" contenteditable="true" style="align-self:center"></div><div class="unit" style="align-self:center">ชุด</div></div>
+ </div>
+ <div class="otherline"><span>9.</span><span>อื่นๆ (โปรดระบุ)</span><span class="editline" contenteditable="true"></span></div>
+ <div class="closing">จึงแจ้งมาเพื่อทราบและโปรดดำเนินการ</div>
+ <div class="requester"><div class="respect">ขอแสดงความนับถือ</div><div class="signline"><img id="lg16_req_sig" class="sig-preview"></div><input class="sig-upload" type="file" accept="image/*" onchange="previewSig(event,'lg16_req_sig')"><div class="name-line" contenteditable="true">Kawinphop Champee</div></div>
+ <div class="sectionbar"><span class="num">2.</span>สำหรับผู้อนุมัติของหน่วยงานผู้ขอเอกสาร (ผู้จัดการ/ผู้อำนวยการ)</div>
+ <div class="approval"><div class="approval-options"><div class="approval-option"><span class="checkbox" onclick="toggleCheck(this)"></span><span>อนุมัติ</span></div><div class="approval-option"><span class="checkbox" onclick="toggleCheck(this)"></span><span>ไม่อนุมัติ</span></div><div class="approval-option"><span class="checkbox" onclick="toggleCheck(this)"></span><span>อื่นๆ</span><span class="editline" contenteditable="true" style="min-width:30mm"></span></div></div><div class="signature-center"><div class="signline"><img id="lg16_app_sig" class="sig-preview"></div><input class="sig-upload" type="file" accept="image/*" onchange="previewSig(event,'lg16_app_sig')"><div class="name-line" contenteditable="true">Thanongsak Chupongwattana</div></div></div>
+ <div class="sectionbar"><span class="num">3.</span>สำหรับฝ่ายกฎหมาย</div>
+ <div class="legal"><div class="legal-date">วันที่ <span class="under" contenteditable="true" style="width:50mm"></span></div><div class="line" style="padding:0">เรียน <span class="under" contenteditable="true" style="width:32mm"></span></div><div class="legal-copy">ฝ่ายกฎหมายได้จัดเอกสารตามที่ท่านแจ้งขอข้างต้นเป็นที่เรียบร้อยแล้ว<br>จึงเรียนมาเพื่อโปรดรับเอกสารข้างต้นเพื่อดำเนินการต่อไป</div><div class="legal-center-lines"><div></div><div></div></div><div class="note">หมายเหตุ <span class="dots" contenteditable="true"></span></div><div class="receive"><div>ลงชื่อ <span class="editline" contenteditable="true"></span></div><div><span class="editline" contenteditable="true"></span> ผู้รับเอกสาร</div><div>วันที่รับ <span class="editline" contenteditable="true"></span></div></div></div>
+</div></main><script>
+function toggleCheck(el){el.classList.toggle('checked')}
+function previewSig(ev,id){const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>document.getElementById(id).src=e.target.result;r.readAsDataURL(f)}
+function clearForm(){document.querySelectorAll('[contenteditable="true"]').forEach(e=>e.innerHTML='');document.querySelectorAll('.checkbox.checked,.checkcell.checked').forEach(e=>e.classList.remove('checked'));document.querySelectorAll('.sig-preview').forEach(e=>e.removeAttribute('src'));document.querySelectorAll('input[type=file]').forEach(e=>e.value='')}
+</script></body></html>
