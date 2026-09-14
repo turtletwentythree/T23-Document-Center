@@ -813,36 +813,38 @@ function registerType(t){ DOC_TYPES[t.id] = t; }
 registerType({
   id:'memo', color:'#3B82F6',
   nameEn:'Approval Memorandum', nameTh:'บันทึกขออนุมัติ (Approval Memorandum)',
-  short:'บันทึกขออนุมัติแบบตาราง ระบุวัตถุประสงค์ เงื่อนไขสำคัญ คำแนะนำ และผู้ลงนาม 3 ระดับ',
+  short:'บันทึกขออนุมัติแบบฟอร์มทางการ ระบุ To/CC วัตถุประสงค์ เงื่อนไขสำคัญ คำแนะนำ และผู้เสนอ (Proposed by)',
   iconName:'doc', lang:'English',
   isDepartmentPrinted:true, departmentPath:'fields.bu', subjectPath:'fields.subject',
   initState(){
     return {
       meta:{ department:'', preparer:'' },
       fields:{
-        memoNo:'-', bu:'', date:todayIso(), subject:'',
-        purpose:{capex:false,opex:false,poa:false,announcement:false,hr:false,othersText:''},
+        memoNo:'-', bu:'', date:todayIso(), subject:'', to:'', cc:'',
+        purpose:{capex:false,budget:false,opex:false,contractual:false,nda:false,poa:false,hr:false,announcement:false,othersText:''},
         attachedDocument:'', background:'', recommendation:'',
-        prepDept:'', prepName:'', prepContact:'', prepSig:'',
-        reviewName:'', reviewSig:'',
-        approveName:'', approveSig:''
+        proposedName:'', proposedTitle:'', proposedContact:'', proposedSig:''
       },
-      keyTerms:[{label:'Contract',value:''},{label:'Supplier',value:''},{label:'Monthly Rental',value:''},{label:'Period',value:''},{label:'Scope of Work',value:''}]
+      keyTerms:[{label:'Project',value:''},{label:'Counterparty (A)',value:''},{label:'Value',value:''},{label:'Period',value:''},{label:'Scope of Work',value:''}]
     };
   },
   renderForm(s){
     const P = s.fields.purpose;
-    const purposeOpts = [['capex','CapEx / Investment'],['opex','OpEx / Budget'],['poa','POA / Contractual Signing'],['announcement','Announcement'],['hr','HR']];
+    const purposeOpts = [['capex','CapEx/Investment'],['budget','Budget'],['opex','OpEx'],['contractual','Contractual Signing'],['nda','NDA'],['poa','POA'],['hr','HR Related'],['announcement','Announcement']];
     return `
     <div class="form-section">
       <h4>ข้อมูลเอกสาร</h4>
       <div class="field-row">
         <div class="field"><label>Memo No.</label><input type="text" data-path="fields.memoNo" value="${esc(s.fields.memoNo)}"></div>
-        <div class="field"><label>Date</label><input type="date" data-path="fields.date" value="${esc(s.fields.date)}"></div>
+        <div class="field"><label>Prepared Date</label><input type="date" data-path="fields.date" value="${esc(s.fields.date)}"></div>
       </div>
       <div class="field-row">
         <div class="field"><label>BU</label><input type="text" data-path="fields.bu" placeholder="เช่น TURTLE23" value="${esc(s.fields.bu)}"></div>
         <div class="field"><label>Subject</label><input type="text" data-path="fields.subject" value="${esc(s.fields.subject)}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>To</label><input type="text" data-path="fields.to" value="${esc(s.fields.to)}"></div>
+        <div class="field"><label>CC</label><input type="text" data-path="fields.cc" value="${esc(s.fields.cc)}"></div>
       </div>
     </div>
     <div class="form-section">
@@ -881,60 +883,54 @@ registerType({
       </div>
     </div>
     <div class="form-section">
-      <h4>5. Authorization</h4>
+      <h4>5. Proposed by</h4>
       <div class="field-row3">
-        <div class="field"><label>Prepared by — Department</label><input type="text" data-path="fields.prepDept" value="${esc(s.fields.prepDept)}"></div>
-        <div class="field"><label>Prepared by — Name</label><input type="text" data-path="fields.prepName" value="${esc(s.fields.prepName)}"></div>
-        <div class="field"><label>Contact Number</label><input type="text" data-path="fields.prepContact" value="${esc(s.fields.prepContact)}"></div>
+        <div class="field"><label>Name</label><input type="text" data-path="fields.proposedName" value="${esc(s.fields.proposedName)}"></div>
+        <div class="field"><label>Position / Title</label><input type="text" data-path="fields.proposedTitle" value="${esc(s.fields.proposedTitle)}"></div>
+        <div class="field"><label>Contact Number</label><input type="text" data-path="fields.proposedContact" value="${esc(s.fields.proposedContact)}"></div>
       </div>
-      ${sigFieldHtml('fields.prepSig', s.fields.prepSig, 'ลายเซ็น Prepared by (แนบรูปภาพ)')}
-      <div class="field"><label>Reviewed &amp; Acknowledged by — Name (Department Head/Preparer's Supervisor)</label><input type="text" data-path="fields.reviewName" value="${esc(s.fields.reviewName)}"></div>
-      ${sigFieldHtml('fields.reviewSig', s.fields.reviewSig, 'ลายเซ็น Reviewed & Acknowledged by (แนบรูปภาพ)')}
-      <div class="field"><label>Approved by — Name (Company's/Project's Authorized Person)</label><input type="text" data-path="fields.approveName" value="${esc(s.fields.approveName)}"></div>
-      ${sigFieldHtml('fields.approveSig', s.fields.approveSig, 'ลายเซ็น Approved by (แนบรูปภาพ)')}
+      ${sigFieldHtml('fields.proposedSig', s.fields.proposedSig, 'ลายเซ็น Proposed by (แนบรูปภาพ)')}
     </div>`;
   },
   renderPreview(s){
     const P = s.fields.purpose;
-    const purposeOpts = [['capex','CapEx / Investment'],['opex','OpEx / Budget'],['poa','POA / Contractual Signing'],['announcement','Announcement'],['hr','HR']];
+    const purposeOpts = [['capex','CapEx/Investment'],['budget','Budget'],['opex','OpEx'],['contractual','Contractual Signing'],['nda','NDA'],['poa','POA'],['hr','HR Related'],['announcement','Announcement']];
     const kt = s.keyTerms.filter(r=>r.label||r.value);
+    const sectionTitle = (label) => `<p style="font-weight:700;color:#40556d;font-size:12px;border-top:4px solid #40556d;border-bottom:2px solid #40556d;padding:3px 0;margin:14px 0 8px;">${label}</p>`;
     return `
-    <img src="${LOGO_TURTLE23}" alt="TURTLE23" style="width:180px;height:auto;object-fit:contain;display:block;margin-bottom:8px;">
-    <div style="text-align:center;font-size:14px;font-weight:700;color:#40556d;border-bottom:2px solid #40556d;padding-bottom:3px;margin-bottom:12px;">TURTLE23 Co.,Ltd&nbsp;&nbsp;|&nbsp;&nbsp;APPROVAL MEMORANDUM</div>
-    <table style="margin-bottom:14px;">
-      <tr><td class="lbl" style="width:16%;">Memo No.</td><td style="width:34%;">${esc(s.fields.memoNo)||'-'}</td><td class="lbl" style="width:16%;">BU</td><td>${esc(s.fields.bu)||'&nbsp;'}</td></tr>
-      <tr><td class="lbl">Date</td><td>${esc(fmtDateSlash(s.fields.date))}</td><td class="lbl">Subject</td><td>${esc(s.fields.subject)||'&nbsp;'}</td></tr>
-    </table>
-    <p style="font-weight:700;color:#40556d;margin-bottom:6px;">1. PURPOSE OF APPROVAL</p>
-    <p style="margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:2px 0;">${purposeOpts.map(([k,l])=>`<span>${P[k]?'☒':'☐'} ${l}</span>`).join('')}<span>${P.othersText? '☒ Others: '+esc(P.othersText):'☐ Others:'}</span></p>
-    <p style="margin-bottom:14px;border-bottom:1px solid #999;padding-bottom:3px;"><b>Attached Document:</b> ${esc(s.fields.attachedDocument)||'&nbsp;'}</p>
-    <p style="font-weight:700;color:#40556d;margin-bottom:6px;">2. BACKGROUND*</p>
-    ${ruledBlock(s.fields.background, 3)}
-    <p style="font-weight:700;color:#40556d;margin:12px 0 6px;">3. KEY TERMS</p>
-    <table style="margin-bottom:14px;">${kt.map(r=>`<tr><td class="lbl" style="width:22%;">${esc(r.label)}</td><td>${esc(r.value)||'&nbsp;'}</td></tr>`).join('') || '<tr><td class="muted">—</td></tr>'}</table>
-    <p style="font-weight:700;color:#40556d;margin-bottom:6px;">4. RECOMMENDATION / CONCLUSION</p>
-    ${ruledBlock(s.fields.recommendation, 2)}
-    <p style="font-weight:700;color:#40556d;margin:16px 0 6px;">5. AUTHORIZATION</p>
-    <div class="sig-grid" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(5,auto);row-gap:4px;">
-      <div style="grid-column:1;grid-row:1;"><b>Prepared by</b><br><span class="muted">${esc(s.fields.prepDept)||'&nbsp;'}</span></div>
-      <div style="grid-column:1;grid-row:2;" class="sig-line">${s.fields.prepSig? `<img src="${esc(s.fields.prepSig)}" alt="ลายเซ็น">` : ''}</div>
-      <div style="grid-column:1;grid-row:3;" class="muted">Signature / Date</div>
-      <div style="grid-column:1;grid-row:4;">Name: ${esc(s.fields.prepName)||'&nbsp;'}</div>
-      ${s.fields.prepContact? `<div style="grid-column:1;grid-row:5;">Contact Number: ${esc(s.fields.prepContact)}</div>` : ''}
-
-      <div style="grid-column:2;grid-row:1;"><b>Reviewed &amp; Acknowledged by</b><br><span class="muted">Department Head/Preparer's Supervisor</span></div>
-      <div style="grid-column:2;grid-row:2;" class="sig-line">${s.fields.reviewSig? `<img src="${esc(s.fields.reviewSig)}" alt="ลายเซ็น">` : ''}</div>
-      <div style="grid-column:2;grid-row:3;" class="muted">Signature / Date</div>
-      <div style="grid-column:2;grid-row:4;">Name: ${esc(s.fields.reviewName)||'&nbsp;'}</div>
-
-      <div style="grid-column:3;grid-row:1;"><b>Approved by</b><br><span class="muted">Company's/Project's Authorized Person</span></div>
-      <div style="grid-column:3;grid-row:2;" class="sig-line">${s.fields.approveSig? `<img src="${esc(s.fields.approveSig)}" alt="ลายเซ็น">` : ''}</div>
-      <div style="grid-column:3;grid-row:3;" class="muted">Signature / Date</div>
-      <div style="grid-column:3;grid-row:4;">Name: ${esc(s.fields.approveName)||'&nbsp;'}</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:4px solid #40556d;padding-bottom:4px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="${LOGO_TURTLE23}" alt="TURTLE23" style="height:30px;width:auto;object-fit:contain;">
+        <span style="font-size:15px;font-weight:700;color:#40556d;">TURTLE23 COMPANY LIMITED</span>
+      </div>
+      <span style="font-size:15px;font-weight:700;color:#40556d;">APPROVAL MEMORANDUM</span>
     </div>
-    <p class="muted memo-footer" style="font-size:9px;font-style:italic;border-top:1px solid #ddd;padding-top:6px;display:flex;justify-content:space-between;">
+    <table style="margin-bottom:2px;">
+      <tr><td class="lbl" style="width:16%;">Memo No.</td><td style="width:34%;">${esc(s.fields.memoNo)||'-'}</td><td class="lbl" style="width:16%;">Prepared Date</td><td>${esc(fmtDateSlash(s.fields.date))}</td></tr>
+      <tr><td class="lbl">BU</td><td>${esc(s.fields.bu)||'&nbsp;'}</td><td class="lbl">Subject</td><td>${esc(s.fields.subject)||'&nbsp;'}</td></tr>
+      <tr><td class="lbl">To</td><td colspan="3">${esc(s.fields.to)||'&nbsp;'}</td></tr>
+      <tr><td class="lbl">CC</td><td colspan="3">${esc(s.fields.cc)||'&nbsp;'}</td></tr>
+    </table>
+    ${sectionTitle('1. PURPOSE OF APPROVAL')}
+    <p style="margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 0;">${purposeOpts.map(([k,l])=>`<span>${P[k]?'☒':'☐'} ${l}</span>`).join('')}<span>${P.othersText? '☒ Others: '+esc(P.othersText):'☐ Others:'}</span></p>
+    <p style="margin-bottom:4px;border-bottom:1px solid #999;padding-bottom:3px;"><b>Attached Document:</b> ${esc(s.fields.attachedDocument)||'&nbsp;'}</p>
+    ${sectionTitle('2. BACKGROUND')}
+    ${ruledBlock(s.fields.background, 3)}
+    ${sectionTitle('3. KEY TERMS')}
+    <table style="margin-bottom:2px;">${kt.map(r=>`<tr><td class="lbl" style="width:26%;">${esc(r.label)}</td><td>${esc(r.value)||'&nbsp;'}</td></tr>`).join('') || '<tr><td class="muted">—</td></tr>'}</table>
+    ${sectionTitle('4. RECOMMENDATION / CONCLUSION')}
+    ${ruledBlock(s.fields.recommendation, 2)}
+    <div style="width:60%;margin-left:auto;margin-top:14px;">
+      <div style="font-weight:700;margin-bottom:2px;">Proposed by:</div>
+      <div class="sig-line">${s.fields.proposedSig? `<img src="${esc(s.fields.proposedSig)}" alt="ลายเซ็น">` : ''}</div>
+      <div class="muted" style="margin-bottom:2px;">Signature / Date</div>
+      <div>${esc(s.fields.proposedName)||'&nbsp;'}</div>
+      <div>${esc(s.fields.proposedTitle)||'&nbsp;'}</div>
+      ${s.fields.proposedContact? `<div>(${esc(s.fields.proposedContact)})</div>` : ''}
+    </div>
+    <p class="muted memo-footer" style="font-size:9px;font-style:italic;border-top:1px solid #ddd;padding-top:6px;margin-top:16px;display:flex;justify-content:space-between;">
       <span>This document is classified as INTERNAL. Do not distribute outside the company without prior authorization.</span>
-      <span>Version 2026.06.01</span>
+      <span>Version 2026.09.14</span>
     </p>`;
   },
   filename(s){ return `${slug(s.fields.subject||'approval-memo')}-${s.fields.date||todayIso()}.pdf`; }
