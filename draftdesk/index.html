@@ -714,6 +714,78 @@ function confirmDialog(message, opts){
 // so declaration order in the file matters.
 let CAP = { db: null, sample: null, downloads: null, mcp: null };
 const DRIVE_FOLDER_ID = '1cXN6UYDYOu4oTGih1fFeviHs1gjJOsWG';
+
+// ---------- standalone-deployment AI backend (GitHub Pages / Vercel) ----------
+// When this copy is NOT running inside a claude.ai Artifact (window.claude is
+// undefined), CAP.sample / CAP.mcp are wired to a small serverless backend
+// instead of Claude's built-in capabilities, so "นำเข้าด้วย AI", the AI
+// sentence-composer, and "อัปโหลดขึ้น Google Drive" keep working on the
+// public link too. The backend (see /api/ai.js and /api/upload-drive.js in
+// the deployed project) holds the Anthropic API key and Google service
+// account key server-side — this page never sees either secret.
+// CAP.downloads is deliberately left null here: outside the Claude sandbox,
+// doSaveToDevice()'s plain-browser fallback (openFallbackTab/showPdfInTab)
+// already saves PDFs natively and needs no polyfill.
+const STANDALONE_AI_BACKEND = 'https://draftdesk-backend-phupha1.vercel.app';
+
+async function standaloneAiCall(mode, prompt, opts){
+  opts = opts || {};
+  const images = [];
+  if(Array.isArray(opts.images)){
+    for(const blob of opts.images){
+      const base64Content = await blobToBase64(blob);
+      images.push({ data: base64Content, mediaType: blob.type || 'image/png' });
+    }
+  }
+  let resp;
+  try{
+    resp = await fetch(STANDALONE_AI_BACKEND + '/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, prompt, images: images.length ? images : undefined, modelTier: opts.modelTier }),
+    });
+  }catch(e){ throw new Error('เชื่อมต่อเซิร์ฟเวอร์ AI ไม่สำเร็จ (เครือข่ายขัดข้อง)'); }
+  let data = null;
+  try{ data = await resp.json(); }catch(e){ /* fall through, data stays null */ }
+  if(!resp.ok){ throw new Error((data && data.message) || 'เรียกใช้ AI ไม่สำเร็จ'); }
+  return data || {};
+}
+
+function setupStandaloneAI(){
+  const sampleFn = async (prompt, opts)=>{
+    const data = await standaloneAiCall('text', prompt, opts);
+    return { text: data.text || '' };
+  };
+  sampleFn.json = async (prompt, opts)=>{
+    const data = await standaloneAiCall('json', prompt, opts);
+    return data.result;
+  };
+  sampleFn.limits = async ()=> ({ images: { maxCount: 6 } });
+  CAP.sample = sampleFn;
+
+  CAP.mcp = {
+    server: async (name)=>{
+      if(name !== 'Google Drive') throw new Error('ไม่รองรับ connector นี้ในโหมด standalone');
+      return {
+        create_file: async ({ title, base64Content, contentMimeType })=>{
+          let resp;
+          try{
+            resp = await fetch(STANDALONE_AI_BACKEND + '/api/upload-drive', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: title, base64Content, mimeType: contentMimeType }),
+            });
+          }catch(e){ throw new Error('เชื่อมต่อเซิร์ฟเวอร์ Drive ไม่สำเร็จ (เครือข่ายขัดข้อง)'); }
+          let data = null;
+          try{ data = await resp.json(); }catch(e){ /* fall through */ }
+          if(!resp.ok){ throw new Error((data && data.message) || 'อัปโหลดขึ้น Google Drive ไม่สำเร็จ'); }
+          return data || {};
+        }
+      };
+    }
+  };
+}
+
 async function initCaps(){
   try{
     if (window.claude && window.claude.use){
@@ -724,6 +796,8 @@ async function initCaps(){
         window.claude.use('mcp').catch(()=>null),
       ]);
       CAP.db = db; CAP.sample = sample; CAP.downloads = downloads; CAP.mcp = mcp;
+    } else {
+      setupStandaloneAI();
     }
   }catch(e){ /* design for absence */ }
   document.querySelectorAll('[data-ai-field]').forEach(b=>{ if(!CAP.sample) b.style.display='none'; });
