@@ -442,14 +442,8 @@
     .checkbox-grid{grid-template-columns:1fr;}
     .paper{padding:28px 20px; font-size:11.5px;}
   }
-  /* ---------- master data ---------- */
-  .md-dept-row{display:grid; grid-template-columns:1fr 160px 36px; gap:10px; align-items:end; margin-bottom:10px;}
-  @media (max-width:700px){ .md-dept-row{grid-template-columns:1fr 96px 36px;} }
-  .md-fab{position:fixed; right:24px; bottom:24px; z-index:150; box-shadow:var(--shadow-3); padding:12px 22px; font-size:14px;}
-  .md-fab-spacer{height:76px;}
 </style>
 
-<datalist id="mdDeptDatalist"></datalist>
 <div class="app" id="app">
   <aside class="rail">
     <div class="brand">
@@ -467,10 +461,6 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
         นำเข้าเอกสารเพื่อแก้ไข
       </button>
-      <button class="rail-btn" data-nav="masterdata" type="button">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
-        ข้อมูลหลัก (Master Data)
-      </button>
     </nav>
     <div class="rail-foot">
       <div class="rail-hint">Internal documents</div>
@@ -481,7 +471,6 @@
   <main class="main">
     <section id="view-gallery" class="view"></section>
     <section id="view-mydocs" class="view" hidden></section>
-    <section id="view-masterdata" class="view" hidden></section>
     <section id="view-editor" class="view" hidden></section>
   </main>
 </div>
@@ -739,7 +728,6 @@ async function initCaps(){
   }catch(e){ /* design for absence */ }
   document.querySelectorAll('[data-ai-field]').forEach(b=>{ if(!CAP.sample) b.style.display='none'; });
   if (CAP.db) subscribeDashboard();
-  ensureMasterDataLoaded();
 }
 
 // ---------- document type registry ----------
@@ -749,7 +737,7 @@ function registerType(t){ DOC_TYPES[t.id] = t; }
 
 /* ============================= 1. MEMO ============================= */
 registerType({
-  id:'memo', color:'#3B82F6', sample:'samples/memo-sample.pdf',
+  id:'memo', color:'#3B82F6',
   nameEn:'Approval Memorandum', nameTh:'บันทึกขออนุมัติ (Approval Memorandum)',
   short:'บันทึกขออนุมัติแบบตาราง ระบุวัตถุประสงค์ เงื่อนไขสำคัญ คำแนะนำ และผู้ลงนาม 3 ระดับ',
   iconName:'doc', lang:'English',
@@ -779,7 +767,7 @@ registerType({
         <div class="field"><label>Date</label><input type="date" data-path="fields.date" value="${esc(s.fields.date)}"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>BU</label><input type="text" data-path="fields.bu" list="mdDeptDatalist" placeholder="เช่น TURTLE23" value="${esc(s.fields.bu)}"></div>
+        <div class="field"><label>BU</label><input type="text" data-path="fields.bu" placeholder="เช่น TURTLE23" value="${esc(s.fields.bu)}"></div>
         <div class="field"><label>Subject</label><input type="text" data-path="fields.subject" value="${esc(s.fields.subject)}"></div>
       </div>
     </div>
@@ -880,7 +868,7 @@ registerType({
 
 /* ============================ 2. POA (Thai) ============================ */
 registerType({
-  id:'poa', color:'#F59E0B', sample:'samples/poa-sample.pdf',
+  id:'poa', color:'#F59E0B',
   nameEn:'Power of Attorney', nameTh:'หนังสือมอบอำนาจ (POA)',
   short:'หนังสือมอบอำนาจให้บุคคลดำเนินการแทนบริษัทฯ พร้อมพยาน 2 ท่าน — ภาษาไทยทั้งฉบับ',
   iconName:'users', lang:'ไทย',
@@ -1011,7 +999,7 @@ registerType({
 
 /* ==================== 4. TERMS AND CONDITIONS OF CONTRACT ==================== */
 registerType({
-  id:'tc', color:'#10B981', sample:'samples/tc-sample.pdf',
+  id:'tc', color:'#10B981',
   nameEn:'Terms and Conditions of Contract', nameTh:'เงื่อนไขสัญญา (Terms and Conditions)',
   short:'สรุปเงื่อนไขสัญญาแบบตาราง ครอบคลุมขอบเขตงาน หลักประกัน เงื่อนไขชำระเงิน และกำหนดเวลา',
   iconName:'stack', lang:'Thai/English',
@@ -1146,7 +1134,7 @@ registerType({
 
 /* ==================== 4b. APPROVAL REQUEST MEMO ==================== */
 registerType({
-  id:'approvalrequest', color:'#0EA5E9', sample:'samples/approval-request-sample.pdf',
+  id:'approvalrequest', color:'#0EA5E9',
   nameEn:'Approval Request Memo', nameTh:'บันทึกขออนุมัติ (พร้อมตารางเปรียบเทียบราคา)',
   short:'บันทึกขออนุมัติแบบจดหมาย พร้อมตารางเปรียบเทียบราคาผู้ให้บริการ และผู้ลงนาม 3 ระดับ',
   iconName:'doc', lang:'English',
@@ -1254,7 +1242,7 @@ registerType({
 
 /* ==================== 4d. PDPA CONTRACT REQUEST FORM ==================== */
 registerType({
-  id:'pdpa', color:'#EC4899', sample:'samples/pdpa-request-sample.pdf',
+  id:'pdpa', color:'#EC4899',
   nameEn:'PDPA Contract Request Form', nameTh:'ใบคำขอตรวจสอบเอกสาร/สัญญา (PDPA)',
   short:'ใบคำขอตรวจสอบเอกสารหรือสัญญาเกี่ยวกับการคุ้มครองข้อมูลส่วนบุคคล พร้อมลำดับอนุมัติและ DPO',
   iconName:'folder', lang:'ไทย',
@@ -1303,7 +1291,7 @@ registerType({
     <div class="form-section">
       <h4>ข้อมูลผู้ขอ</h4>
       <div class="field-row">
-        <div class="field"><label>ชื่อหน่วยงาน</label><input type="text" data-path="fields.orgName" list="mdDeptDatalist" value="${esc(f.orgName)}"></div>
+        <div class="field"><label>ชื่อหน่วยงาน</label><input type="text" data-path="fields.orgName" value="${esc(f.orgName)}"></div>
         <div class="field"><label>ชื่อเจ้าของงาน</label><input type="text" data-path="fields.ownerName" value="${esc(f.ownerName)}"></div>
       </div>
       <div class="field-row3">
@@ -1561,7 +1549,7 @@ registerType({
 
 /* ================ 5. BTS — ใบคำขอตรวจสอบเอกสาร/สัญญา (LG17) ================ */
 registerType({
-  id:'lg17', code:'LG17', color:'#EF4444', sample:'samples/lg17-sample.pdf',
+  id:'lg17', code:'LG17', color:'#EF4444',
   nameEn:'Contract Review Request (BTS)', nameTh:'ใบคำขอตรวจสอบเอกสาร หรือสัญญาต่างๆ (BTS)',
   short:'ส่งถึงฝ่ายกฎหมาย เพื่อร่าง ตรวจสอบ หรือแก้ไขสัญญา ระบุคู่สัญญา มูลค่า และเงื่อนไข — ฟอร์แมตตามแบบฟอร์ม LG17 ของ BTS Group',
   iconName:'dash', lang:'ไทย',
@@ -1584,7 +1572,7 @@ registerType({
     <div class="form-section">
       <h4>ข้อมูลผู้ขอ</h4>
       <div class="field-row3">
-        <div class="field"><label>ชื่อหน่วยงาน (Department)</label><input type="text" data-path="fields.unitName" list="mdDeptDatalist" value="${esc(f.unitName)}"></div>
+        <div class="field"><label>ชื่อหน่วยงาน (Department)</label><input type="text" data-path="fields.unitName" value="${esc(f.unitName)}"></div>
         <div class="field"><label>งานของบริษัท</label><input type="text" data-path="fields.companyWork" value="${esc(f.companyWork)}"></div>
         <div class="field"><label>เบอร์โทรภายใน</label><input type="text" data-path="fields.extNo" value="${esc(f.extNo)}"></div>
       </div>
@@ -1729,7 +1717,7 @@ registerType({
 
 /* ================ 6. BTS — ใบคำขอเอกสารสำคัญของบริษัทฯ (LG16) ================ */
 registerType({
-  id:'lg16', code:'LG16', color:'#0B3C8A', sample:'samples/lg16-sample.pdf',
+  id:'lg16', code:'LG16', color:'#0B3C8A',
   nameEn:'Company Document Request (BTS)', nameTh:'ใบคำขอเอกสารสำคัญของบริษัทฯ (BTS)',
   short:'ขอเอกสารสำคัญของบริษัท เช่น หนังสือรับรอง หนังสือมอบอำนาจ สำเนาบัตรประชาชน เพื่อใช้ประกอบธุรกรรม — ฟอร์แมตตามแบบฟอร์ม LG16 ของ BTS Group',
   iconName:'doc', lang:'ไทย',
@@ -1756,7 +1744,7 @@ registerType({
     <div class="form-section">
       <h4>ข้อมูลหน่วยงาน</h4>
       <div class="field-row3">
-        <div class="field"><label>ชื่อหน่วยงาน (Department)</label><input type="text" data-path="fields.unitName" list="mdDeptDatalist" value="${esc(f.unitName)}"></div>
+        <div class="field"><label>ชื่อหน่วยงาน (Department)</label><input type="text" data-path="fields.unitName" value="${esc(f.unitName)}"></div>
         <div class="field"><label>งานของบริษัท</label><input type="text" data-path="fields.companyWork" value="${esc(f.companyWork)}"></div>
         <div class="field"><label>เบอร์โทรภายใน</label><input type="text" data-path="fields.extNo" value="${esc(f.extNo)}"></div>
       </div>
@@ -1929,11 +1917,9 @@ function navTo(view){
   document.querySelectorAll('.rail-btn[data-nav]').forEach(b=>b.classList.toggle('active', b.dataset.nav===view));
   document.getElementById('view-gallery').hidden = view!=='gallery';
   document.getElementById('view-mydocs').hidden = view!=='mydocs';
-  document.getElementById('view-masterdata').hidden = view!=='masterdata';
   document.getElementById('view-editor').hidden = view!=='editor';
   if(view==='gallery') renderGallery();
   if(view==='mydocs') renderMyDocs();
-  if(view==='masterdata') renderMasterData();
   window.scrollTo({top:0});
 }
 document.querySelectorAll('.rail-btn[data-nav]').forEach(b=>{
@@ -1957,7 +1943,6 @@ function renderGallery(){
       </div>
       <div class="type-card-actions">
         <button class="btn btn-primary btn-sm" data-start="${t.id}" type="button">${icon('plus',13)} เริ่มกรอก</button>
-        <a class="btn btn-secondary btn-sm" href="${t.sample}" target="_blank" rel="noopener">${icon('eye',13)} ดูตัวอย่าง</a>
       </div>
     </div>`).join('');
   el.innerHTML = `
@@ -1976,7 +1961,6 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
   currentTypeId = typeId;
   const type = DOC_TYPES[typeId];
   editorState = presetState ? JSON.parse(JSON.stringify(presetState)) : type.initState();
-  if(!presetState) applyMasterDataDefaults(type, editorState);
   currentDocId = presetDocId || null;
   currentDocCreatedAt = presetCreatedAt || null;
   const el = document.getElementById('view-editor');
@@ -1992,7 +1976,6 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
         <div class="sub" style="margin-top:2px;">${esc(type.short)}</div>
         ${currentDocId? `<div class="import-banner">${icon('upload',13)} นำเข้าเอกสารที่บันทึกไว้แล้ว — แก้ไขแล้วบันทึกทับฉบับเดิมได้เลย</div>`:''}
       </div>
-      <a class="btn btn-ghost btn-sm" style="margin-left:auto;" href="${type.sample}" target="_blank" rel="noopener">${icon('eye',13)} ดูไฟล์ตัวอย่างจริง</a>
     </div>
     <div class="pane-card">
       <div class="form-section" style="border-bottom:none;">
@@ -2000,7 +1983,7 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
         ${type.isDepartmentPrinted
           ? `<div class="field" style="max-width:340px;"><label>ผู้จัดทำ</label><input type="text" data-path="meta.preparer" placeholder="ชื่อผู้กรอกเอกสาร" value="${esc(editorState.meta.preparer)}"></div>`
           : `<div class="field-row">
-              <div class="field"><label>แผนก / หน่วยงาน</label><input type="text" data-path="meta.department" list="mdDeptDatalist" placeholder="เช่น IT, Legal, Finance" value="${esc(editorState.meta.department)}"></div>
+              <div class="field"><label>แผนก / หน่วยงาน</label><input type="text" data-path="meta.department" placeholder="เช่น IT, Legal, Finance" value="${esc(editorState.meta.department)}"></div>
               <div class="field"><label>ผู้จัดทำ</label><input type="text" data-path="meta.preparer" placeholder="ชื่อผู้กรอกเอกสาร" value="${esc(editorState.meta.preparer)}"></div>
             </div>`}
       </div>
@@ -2017,8 +2000,9 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
         </div>
         <div id="formFields">${type.renderForm(editorState)}</div>
         <div class="sticky-actions">
-          <button class="btn btn-primary" id="btnSavePdf" type="button">${icon('download',15)} บันทึกเป็น PDF</button>
-          <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1cXN6UYDYOu4oTGih1fFeviHs1gjJOsWG?usp=sharing" target="_blank" rel="noopener">${icon('ext',15)} เปิดโฟลเดอร์ Google Drive</a>
+          <button class="btn btn-primary" id="btnSaveDevice" type="button">${icon('download',15)} บันทึกลงเครื่อง</button>
+          <button class="btn btn-secondary" id="btnUploadDrive" type="button">${icon('upload',15)} อัปโหลดขึ้น Google Drive</button>
+          <a class="btn btn-ghost" href="https://drive.google.com/drive/folders/1cXN6UYDYOu4oTGih1fFeviHs1gjJOsWG?usp=sharing" target="_blank" rel="noopener">${icon('ext',15)} เปิดโฟลเดอร์ Google Drive</a>
           <button class="btn btn-ghost" id="btnResetForm" type="button">${icon('trash',15)} ล้างฟอร์ม</button>
         </div>
       </div>
@@ -2032,7 +2016,8 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
     </div>`;
   el.querySelector('[data-back]').addEventListener('click', ()=> navTo('gallery'));
   bindFormPane();
-  document.getElementById('btnSavePdf').addEventListener('click', doSavePdf);
+  document.getElementById('btnSaveDevice').addEventListener('click', doSaveToDevice);
+  document.getElementById('btnUploadDrive').addEventListener('click', doUploadToDrive);
   document.getElementById('btnResetForm').addEventListener('click', async ()=>{
     const ok = await confirmDialog('ล้างข้อมูลในฟอร์มทั้งหมด รวมถึงติ๊กบ็อกและไฟล์ลายเซ็นที่แนบไว้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้', { title:'ล้างฟอร์ม', okLabel:'ล้างข้อมูล' });
     if(ok) mountEditor(typeId);
@@ -2175,19 +2160,6 @@ function onFieldInput(e){
   if(!path) return;
   const value = t.type==='checkbox' ? t.checked : t.value;
   setPath(editorState, path, value);
-  // Master Data integration: if this is the current type's department field
-  // and the type also has an internal-extension field, auto-fill the
-  // extension number whenever the typed/selected name matches a saved
-  // department — this is the "dropdown selection" half of Master Data.
-  const type = DOC_TYPES[currentTypeId];
-  if(type && path === type.departmentPath && getPath(editorState,'fields.extNo') !== undefined){
-    const match = (masterData.departments||[]).find(d => (d.name||'').trim().toLowerCase() === String(value).trim().toLowerCase());
-    if(match && match.extNo){
-      setPath(editorState, 'fields.extNo', match.extNo);
-      const extInput = document.querySelector('#formPane [data-path="fields.extNo"]');
-      if(extInput) extInput.value = match.extNo;
-    }
-  }
   if(t.dataset.remount==='true') remountFormSection();
   else updatePreview();
 }
@@ -2266,7 +2238,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async ()=>{
   out.textContent = 'AI กำลังแต่งประโยค...';
   genBtn.disabled = true; acceptBtn.disabled = true;
   try{
-    const res = await CAP.sample(prompt, { modelTier:'quick', onText:({text})=>{ out.textContent = text; } });
+    const res = await CAP.sample(prompt, { modelTier:'complex', onText:({text})=>{ out.textContent = text; } });
     out.textContent = res.text;
     acceptBtn.disabled = false;
   }catch(err){
@@ -2327,7 +2299,7 @@ async function pdfFileToImageBlobs(file, maxPages){
   const blobs = [];
   for(let i = 1; i <= numPages; i++){
     const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 1.8 });
+    const viewport = page.getViewport({ scale: 2.2 });
     const canvas = document.createElement('canvas');
     canvas.width = Math.ceil(viewport.width);
     canvas.height = Math.ceil(viewport.height);
@@ -2383,7 +2355,22 @@ function mergeExtractedData(target, source){
 
 // Reads the CURRENTLY rendered form (#formFields) and, for every element
 // with a data-path, finds its human-readable Thai label — generic across
-// all 9 document types, no per-type authoring needed.
+// all 9 document types, no per-type authoring needed. Also captures the
+// field's data type (date/checkbox/select/text) so the AI prompt can give
+// precise, per-field formatting rules instead of guessing.
+function describeFieldType(el){
+  const tag = el.tagName.toLowerCase();
+  if(tag === 'select'){
+    const opts = Array.from(el.options || []).map(o=>o.value).filter(v=>v!=='');
+    return opts.length ? `ตัวเลือก (เลือกได้เฉพาะค่าต่อไปนี้เท่านั้น: ${opts.map(v=>`"${v}"`).join(', ')})` : 'ตัวเลือก';
+  }
+  if(tag === 'textarea') return 'ข้อความยาว';
+  const type = (el.getAttribute('type') || 'text').toLowerCase();
+  if(type === 'date') return 'วันที่ (ตอบเป็น YYYY-MM-DD ปีคริสต์ศักราชเท่านั้น)';
+  if(type === 'checkbox') return 'ใช่/ไม่ใช่ (ตอบเป็น true หรือ false เท่านั้น)';
+  if(type === 'number') return 'ตัวเลข';
+  return 'ข้อความ';
+}
 function buildAiImportGuide(){
   const items = [];
   const seen = new Set();
@@ -2401,7 +2388,7 @@ function buildAiImportGuide(){
       if(lbl) label = lbl.textContent.replace(/\s+/g,' ').trim();
       else if(el.placeholder) label = el.placeholder;
     }
-    items.push({ path, label: label || path });
+    items.push({ path, label: label || path, type: describeFieldType(el) });
   });
   return items;
 }
@@ -2482,7 +2469,7 @@ function addAiImportFiles(fileList){
     try{
       let limits = null;
       try{ limits = await CAP.sample.limits(); }catch(e){ /* fall through, treat as unknown */ }
-      const maxImages = (limits && limits.images && limits.images.maxCount) || 4;
+      const maxImages = (limits && limits.images && limits.images.maxCount) || 6;
       const imagesSupported = !!(limits && limits.images);
       const imageBlobs = [];
       if(imagesSupported){
@@ -2507,30 +2494,34 @@ function addAiImportFiles(fileList){
       const type = DOC_TYPES[currentTypeId];
       const template = type.initState();
       const guide = buildAiImportGuide();
-      const guideText = guide.map(g => `- ${g.path}: ${g.label}`).join('\n') || '(ไม่มีช่องที่กรอกได้ในฟอร์มนี้)';
+      const guideText = guide.map(g => `- ${g.path} [${g.type}]: ${g.label}`).join('\n') || '(ไม่มีช่องที่กรอกได้ในฟอร์มนี้)';
 
       const promptParts = [
-        `คุณกำลังช่วยพนักงานบริษัทกรอกแบบฟอร์มเอกสารภายในองค์กร ชื่อแบบฟอร์ม: "${type.nameTh}"`,
-        `นี่คือโครงสร้าง JSON ของฟอร์มนี้ (ต้องตอบกลับด้วย key และโครงสร้างแบบเดียวกันทุกประการ):`,
+        `คุณคือผู้ช่วยกรอกเอกสารภายในองค์กรที่ละเอียดรอบคอบและอ่านเอกสารเก่งมาก กำลังช่วยพนักงานบริษัทกรอกแบบฟอร์ม: "${type.nameTh}"`,
+        `นี่คือโครงสร้าง JSON ของฟอร์มนี้ (ต้องตอบกลับด้วย key และโครงสร้างแบบเดียวกันทุกประการ ห้ามเพิ่ม/ลบ/เปลี่ยนชื่อ key):`,
         JSON.stringify(template, null, 2),
         ``,
-        `ความหมายของแต่ละช่อง (path: ความหมาย):`,
+        `ความหมายและชนิดของแต่ละช่อง (path [ชนิดข้อมูล]: ความหมาย):`,
         guideText,
         ``,
-        `หน้าที่ของคุณ: อ่านข้อมูลจาก "เอกสารต้นฉบับ" ด้านล่าง (ข้อความและ/หรือรูปภาพที่แนบมา) แล้วดึงข้อมูลที่ตรงกับแต่ละช่องข้างต้นให้มากที่สุด จากนั้นตอบกลับเป็น JSON object เดียวตามโครงสร้างด้านบนเท่านั้น ห้ามมีข้อความอธิบายอื่นใดนอกเหนือจาก JSON`,
+        `หน้าที่ของคุณ: อ่านข้อมูลจาก "เอกสารต้นฉบับ" ด้านล่างอย่างละเอียดทีละบรรทัด/ทีละส่วนของภาพที่แนบมา (รวมถึงตาราง หัวกระดาษ ท้ายกระดาษ และลายเซ็น) แล้วดึงข้อมูลที่ตรงกับแต่ละช่องข้างต้นให้ครบและแม่นยำที่สุดเท่าที่จะทำได้ จากนั้นตอบกลับเป็น JSON object เดียวตามโครงสร้างด้านบนเท่านั้น ห้ามมีข้อความอธิบาย หัวข้อ หรือ Markdown ใดๆ นอกเหนือจาก JSON`,
         `กติกาสำคัญ:`,
-        `- ใส่ค่าเฉพาะช่องที่พบข้อมูลจริงในเอกสารต้นฉบับและมั่นใจเท่านั้น ช่องที่ไม่พบข้อมูลให้เว้นเป็นค่าว่างตามชนิดเดิม (string ว่าง หรือ false) ห้ามเดาหรือแต่งข้อมูลขึ้นเองเด็ดขาด`,
-        `- ช่องที่เป็นวันที่ ให้แปลงเป็นรูปแบบ YYYY-MM-DD แบบปีคริสต์ศักราช`,
+        `- ใส่ค่าเฉพาะช่องที่พบข้อมูลจริงในเอกสารต้นฉบับและมั่นใจเท่านั้น ช่องที่ไม่พบข้อมูลหรือไม่มั่นใจให้เว้นเป็นค่าว่างตามชนิดเดิม (string ว่าง หรือ false) ห้ามเดา คาดเดา หรือแต่งข้อมูลขึ้นเองเด็ดขาด`,
+        `- ชื่อคน ชื่อหน่วยงาน เลขที่เอกสาร และตัวเลข ให้คัดลอกตัวสะกด/รูปแบบตรงตามต้นฉบับทุกตัวอักษร ห้ามแก้ไขหรือย่อ`,
+        `- ช่องที่เป็นวันที่ ให้แปลงเป็นรูปแบบ YYYY-MM-DD แบบปีคริสต์ศักราชเสมอ หากปีในเอกสารต้นฉบับเป็นปีพุทธศักราช (พ.ศ. เช่น 2567) ให้ลบ 543 ก่อนแปลง (เช่น พ.ศ. 2567 = ค.ศ. 2024) ให้สังเกตบริบทให้ดีว่าเอกสารใช้ปี พ.ศ. หรือ ค.ศ.`,
+        `- ช่องประเภทตัวเลือก (มีรายการค่าที่กำหนดไว้) ให้ตอบเป็นหนึ่งในค่าที่กำหนดเท่านั้น ห้ามสร้างค่าใหม่`,
+        `- อย่ายึดติดกับคำในเอกสารต้นฉบับที่ตรงกับชื่อช่องทุกตัวอักษร ให้ตีความความหมายและบริบทของฟอร์มไทยทั่วไปด้วย (เช่น "เรียน"/"ถึง" มักหมายถึงผู้รับ, "จาก"/"เรื่อง" มักอยู่ต้นเอกสาร, เลขที่หนังสือมักอยู่มุมบนซ้าย)`,
         `- สำหรับ array: ถ้าสมาชิกแต่ละตัวในโครงสร้างด้านบนมีช่อง "label" ที่มีข้อความระบุตายตัวอยู่แล้ว ห้ามเพิ่มหรือลดจำนวนสมาชิก ให้เติมเฉพาะช่องอื่นตามลำดับเดิม แต่ถ้าสมาชิกเป็นแถวข้อมูลว่างเปล่าไม่มี label ตายตัว ให้ปรับจำนวนสมาชิกของ array นั้นให้ตรงกับจำนวนรายการจริงที่พบในเอกสารต้นฉบับ`,
+        `- ก่อนตอบ ให้ทบทวนอีกครั้งว่าไม่มีการเดาข้อมูล และ JSON ที่จะตอบถูกต้องตามโครงสร้างและชนิดข้อมูลของทุกช่องแล้ว`,
         ``,
         `เอกสารต้นฉบับ:`,
         text ? text : (imageBlobs.length ? '(ดูข้อมูลจากรูปภาพที่แนบมา)' : '(ไม่มีข้อความ)'),
       ];
 
-      statusText.textContent = 'AI กำลังอ่านและกรอกข้อมูล... (อาจใช้เวลาถึง 1 นาที)';
+      statusText.textContent = 'AI กำลังอ่านและกรอกข้อมูลอย่างละเอียด... (อาจใช้เวลาถึง 1-2 นาที)';
       const result = await CAP.sample.json(promptParts.join('\n'), {
         images: imageBlobs.length ? imageBlobs : undefined,
-        modelTier: 'quick',
+        modelTier: 'complex',
         cache: false,
       });
       if(!isPlainObject(result)) throw { code:'invalid_json', message:'AI did not return an object' };
@@ -2646,22 +2637,15 @@ async function uploadPdfToDrive(blob, filename){
   });
 }
 
-async function doSavePdf(){
+// Renders the current document to a PDF Blob, temporarily undoing the
+// on-screen scaled/clipped preview (see the comment this replaced) so
+// html2canvas captures the full, natural-size content. Shared by both the
+// "save to device" and "upload to Drive" actions below so each can be
+// triggered independently.
+async function generatePdfForCurrentDoc(){
   const type = DOC_TYPES[currentTypeId];
-  const btn = document.getElementById('btnSavePdf');
   const paperEl = document.getElementById('paperEl');
   const frameEl = document.getElementById('paperFrame');
-  btn.disabled = true;
-  const originalLabel = btn.innerHTML;
-  btn.innerHTML = 'กำลังสร้างไฟล์...';
-  // the on-screen preview shows the paper scaled down and centered inside a
-  // clipped (overflow:hidden) A4-shaped frame so it always LOOKS like one
-  // page. For capture we must undo all of that — restore normal document
-  // flow (position:static) and let the frame grow to fit (overflow:visible,
-  // height:auto) — otherwise html2canvas would only ever see the sliver of
-  // content that happens to fall inside the clipped frame and silently
-  // truncate everything else. Only exportPaperToPdfBlob() decides how the
-  // full, natural-size content gets fit onto the actual PDF page.
   const priorPaper = { transform: paperEl.style.transform, position: paperEl.style.position, top: paperEl.style.top, left: paperEl.style.left };
   const priorFrame = frameEl ? { overflow: frameEl.style.overflow, height: frameEl.style.height } : null;
   paperEl.style.transform = 'none';
@@ -2670,17 +2654,81 @@ async function doSavePdf(){
   try{
     const blob = await exportPaperToPdfBlob(paperEl, type.forcePages);
     const filename = type.filename(editorState);
-    let savedSomewhere = false;
+    return { blob, filename, type };
+  } finally {
+    paperEl.style.transform = priorPaper.transform;
+    paperEl.style.position = priorPaper.position;
+    paperEl.style.top = priorPaper.top;
+    paperEl.style.left = priorPaper.left;
+    if(frameEl){ frameEl.style.overflow = priorFrame.overflow; frameEl.style.height = priorFrame.height; }
+    scheduleFitPaperToA4();
+  }
+}
 
-    // 1) Save to this device — independent of the Drive upload below, so a
-    // Drive failure never blocks the local copy the user already relies on.
+// Plain-browser fallback for when CAP.downloads isn't available at all —
+// i.e. this copy is running outside the claude.ai viewer (opened from
+// GitHub Pages/Vercel, or as a local file) where window.claude doesn't
+// exist.
+//
+// This used to trigger a synthetic <a download> click, which reported
+// success unconditionally — but several browsers (Safari and most mobile
+// browsers in particular) only allow a download/popup to fire within the
+// SAME synchronous call stack as the user's actual click. Generating the
+// PDF is unavoidably async (html2canvas has to render the page first), so
+// by the time the download was attempted, the browser's "trusted user
+// gesture" window had already closed and it silently dropped the download
+// — while our code still reported "saved" because the DOM click itself
+// never throws. That was the exact bug: "shows saved, but nothing saves."
+//
+// Fix: open a blank tab SYNCHRONOUSLY inside the click handler, before any
+// await — that popup is still tied to the original trusted gesture — and
+// only navigate that already-open tab to the PDF once it's ready. Every
+// browser lets an already-open window navigate at any time, so this works
+// regardless of how long PDF generation takes. The PDF then opens in the
+// browser's own PDF viewer, and the user finishes the save themselves with
+// its built-in Download/Save control — a message we now say honestly,
+// instead of claiming the file already reached disk.
+function openFallbackTab(){
+  try{ return window.open('', '_blank'); }catch(e){ return null; }
+}
+function showPdfInTab(blob, tab){
+  try{
+    const url = URL.createObjectURL(blob);
+    let target = tab;
+    if(!target || target.closed) target = window.open(url, '_blank');
+    else target.location.href = url;
+    if(!target) return false;
+    setTimeout(()=> URL.revokeObjectURL(url), 60000);
+    return true;
+  }catch(e){ return false; }
+}
+
+async function doSaveToDevice(){
+  const btn = document.getElementById('btnSaveDevice');
+  // Must happen before any await — see openFallbackTab's comment above.
+  const fallbackTab = CAP.downloads ? null : openFallbackTab();
+  if(!CAP.downloads && !fallbackTab){
+    toast('บันทึกไม่สำเร็จ: เบราว์เซอร์บล็อกหน้าต่างใหม่ กรุณาอนุญาตป๊อปอัปสำหรับหน้านี้แล้วลองใหม่','error');
+    return;
+  }
+  btn.disabled = true;
+  const originalLabel = btn.innerHTML;
+  btn.innerHTML = 'กำลังสร้างไฟล์...';
+  try{
+    const { blob, filename, type } = await generatePdfForCurrentDoc();
+    let saved = false;
     if(!CAP.downloads){
-      toast('การบันทึกไฟล์ลงเครื่องใช้ไม่ได้ในมุมมองนี้','error');
+      // Not running inside claude.ai — show the PDF in the tab we already
+      // opened; the user saves it from their browser's own PDF viewer.
+      saved = showPdfInTab(blob, fallbackTab);
+      toast(saved
+        ? 'เปิดไฟล์ PDF ในแท็บใหม่แล้ว — กดปุ่มดาวน์โหลด/บันทึกในเบราว์เซอร์เพื่อเซฟไฟล์ลงเครื่อง'
+        : 'การบันทึกไฟล์ลงเครื่องใช้ไม่ได้ในมุมมองนี้', saved ? 'success' : 'error');
     } else {
       try{
         const res = await CAP.downloads.save({ filename, data: blob });
         if(res.status==='saved'){
-          savedSomewhere = true;
+          saved = true;
           toast('บันทึกไฟล์ลงเครื่องเรียบร้อยแล้ว','success');
         }
       }catch(err){
@@ -2688,17 +2736,30 @@ async function doSavePdf(){
         else toast('บันทึกไฟล์ลงเครื่องไม่สำเร็จ: ' + (err && err.message ? err.message : 'unknown error'), 'error');
       }
     }
+    if(saved) await recordDocument(type);
+  }catch(err){
+    if(fallbackTab && !fallbackTab.closed) fallbackTab.close();
+    toast('สร้างไฟล์ PDF ไม่สำเร็จ: ' + (err && err.message ? err.message : 'unknown error'), 'error');
+  }finally{
+    btn.disabled = false;
+    btn.innerHTML = originalLabel;
+  }
+}
 
-    // 2) Upload the same PDF to the shared Google Drive folder — only
-    // available to viewers who have their own Google Drive connector
-    // connected in Claude; degrades gracefully otherwise.
+async function doUploadToDrive(){
+  const btn = document.getElementById('btnUploadDrive');
+  btn.disabled = true;
+  const originalLabel = btn.innerHTML;
+  btn.innerHTML = 'กำลังอัปโหลด...';
+  try{
+    const { blob, filename, type } = await generatePdfForCurrentDoc();
     if(!CAP.mcp){
       toast('ยังไม่ได้เชื่อมต่อ Google Drive ในบัญชี Claude ของคุณ — ใช้ปุ่ม "เปิดโฟลเดอร์ Google Drive" เพื่ออัปโหลดเอง','error');
     } else {
       try{
         await uploadPdfToDrive(blob, filename);
-        savedSomewhere = true;
         toast('อัปโหลดขึ้น Google Drive เรียบร้อยแล้ว','success');
+        await recordDocument(type);
       }catch(err){
         const code = err && err.code;
         if(code === 'server_not_connected'){
@@ -2714,17 +2775,9 @@ async function doSavePdf(){
         }
       }
     }
-
-    if(savedSomewhere) await recordDocument(type);
   }catch(err){
     toast('สร้างไฟล์ PDF ไม่สำเร็จ: ' + (err && err.message ? err.message : 'unknown error'), 'error');
   }finally{
-    paperEl.style.transform = priorPaper.transform;
-    paperEl.style.position = priorPaper.position;
-    paperEl.style.top = priorPaper.top;
-    paperEl.style.left = priorPaper.left;
-    if(frameEl){ frameEl.style.overflow = priorFrame.overflow; frameEl.style.height = priorFrame.height; }
-    scheduleFitPaperToA4();
     btn.disabled = false;
     btn.innerHTML = originalLabel;
   }
@@ -2881,143 +2934,6 @@ function renderMyDocs(){
   });
 }
 
-// ---------- master data ----------
-// A single shared record (settings/masterData) storing company/department
-// info that every document type can draw on: (1) auto-fill — new documents
-// start with the first saved department (and, where applicable, the saved
-// "company work" description) already filled in; (2) dropdown — every
-// department-ish field across all 8 document types shares one <datalist>
-// (#mdDeptDatalist) of saved department names, and picking a saved name in
-// LG16/LG17 also auto-fills the matching internal extension (see
-// onFieldInput). Shared org-wide via CAP.db, matching the existing
-// documents/ collection's one-shot get()/set() pattern (see recordDocument).
-function defaultMasterData(){
-  return { companyWork:'', departments:[{ name:'', extNo:'' }] };
-}
-let masterData = defaultMasterData();
-let masterDataLoaded = false;
-
-async function ensureMasterDataLoaded(){
-  if(!CAP.db){ masterDataLoaded = true; populateDeptDatalist(); return; }
-  try{
-    const snap = await CAP.db.doc('settings/masterData').get();
-    if(snap.exists){
-      const data = snap.data() || {};
-      const departments = Array.isArray(data.departments) && data.departments.length
-        ? data.departments.map(d=>({ name:(d&&d.name)||'', extNo:(d&&d.extNo)||'' }))
-        : defaultMasterData().departments;
-      masterData = { companyWork: data.companyWork || '', departments };
-    }
-  }catch(e){ /* design for absence */ }
-  masterDataLoaded = true;
-  populateDeptDatalist();
-  const el = document.getElementById('view-masterdata');
-  if(el && !el.hidden) renderMasterData();
-}
-
-function populateDeptDatalist(){
-  const dl = document.getElementById('mdDeptDatalist');
-  if(!dl) return;
-  const names = [...new Set((masterData.departments||[]).map(d=>(d.name||'').trim()).filter(Boolean))];
-  dl.innerHTML = names.map(n=>`<option value="${esc(n)}">`).join('');
-}
-
-// Called from mountEditor() for brand-new documents only (never when
-// importing/editing an existing one) so it never overwrites real data.
-function applyMasterDataDefaults(type, state){
-  if(!masterDataLoaded) return;
-  const dep = (masterData.departments||[]).find(d=> (d.name||'').trim());
-  if(dep && type.departmentPath){
-    const cur = getPath(state, type.departmentPath);
-    if(!cur) setPath(state, type.departmentPath, dep.name);
-    if(dep.extNo && getPath(state,'fields.extNo')!==undefined && !getPath(state,'fields.extNo')){
-      setPath(state, 'fields.extNo', dep.extNo);
-    }
-  }
-  if(masterData.companyWork){
-    const cw = getPath(state, 'fields.companyWork');
-    if(cw !== undefined && !cw) setPath(state, 'fields.companyWork', masterData.companyWork);
-  }
-}
-
-function renderMasterData(){
-  const el = document.getElementById('view-masterdata');
-  const depts = (masterData.departments && masterData.departments.length) ? masterData.departments : [{name:'',extNo:''}];
-  const rows = depts.map((d,i)=>`
-    <div class="md-dept-row">
-      <div class="field" style="margin-bottom:0;">${i===0?'<label>ชื่อแผนก / หน่วยงาน</label>':''}<input type="text" data-md-path="departments.${i}.name" placeholder="เช่น IT, Legal, Finance" value="${esc(d.name)}"></div>
-      <div class="field" style="margin-bottom:0;">${i===0?'<label>เบอร์ต่อภายใน</label>':''}<input type="text" data-md-path="departments.${i}.extNo" placeholder="เช่น 1234" value="${esc(d.extNo)}"></div>
-      <button type="button" class="icon-btn" data-md-action="remove-dept" data-index="${i}" aria-label="ลบแผนกนี้">${icon('trash',14)}</button>
-    </div>`).join('');
-  el.innerHTML = `
-    <div class="page-head">
-      <div>
-        <h1>ข้อมูลหลัก (Master Data)</h1>
-        <div class="sub">เก็บข้อมูลบริษัท/แผนกไว้ใช้ร่วมกันทั้งองค์กร ระบบจะเติมให้อัตโนมัติในเอกสารใหม่และแนะนำในช่องกรอกแผนก/หน่วยงานของทุกประเภทเอกสาร</div>
-      </div>
-    </div>
-    <div class="pane-card" style="padding:18px 20px; margin-bottom:14px;">
-      <div class="form-section" style="border-bottom:none; padding:0;">
-        <h4>งานของบริษัท (ใช้ในเอกสาร PDPA / LG16 / LG17)</h4>
-        <div class="field" style="margin-bottom:0;"><label>คำอธิบายงานของบริษัท</label><textarea data-md-path="companyWork" rows="2" placeholder="เช่น ให้บริการพัฒนาและบริหารจัดการอสังหาริมทรัพย์">${esc(masterData.companyWork)}</textarea></div>
-      </div>
-    </div>
-    <div class="pane-card" style="padding:18px 20px; margin-bottom:14px;">
-      <div class="form-section" style="border-bottom:none; padding:0;">
-        <h4>รายชื่อแผนก / หน่วยงาน</h4>
-        <div id="mdDeptRows">${rows}</div>
-        <button type="button" class="add-row-btn" data-md-action="add-dept" style="margin-top:4px;">${icon('plus',13)} เพิ่มแผนก</button>
-      </div>
-    </div>
-    ${!CAP.db ? `<div class="empty-hint" style="text-align:left;">หมายเหตุ: มุมมองนี้ยังไม่เชื่อมต่อระบบฐานข้อมูลกลาง จึงยังบันทึกข้อมูลหลักไม่ได้</div>` : ''}
-    <div class="md-fab-spacer"></div>
-    <button type="button" class="btn btn-primary md-fab" id="mdSaveBtn">${icon('check',15)} Save Master Data</button>
-  `;
-}
-
-function onMasterDataInput(e){
-  const t = e.target;
-  const path = t.dataset.mdPath;
-  if(!path) return;
-  setPath(masterData, path, t.value);
-}
-
-function onMasterDataClick(e){
-  const btn = e.target.closest('[data-md-action]');
-  if(btn){
-    if(btn.dataset.mdAction==='add-dept'){
-      masterData.departments.push({name:'',extNo:''});
-      renderMasterData();
-    }else if(btn.dataset.mdAction==='remove-dept'){
-      const idx = Number(btn.dataset.index);
-      masterData.departments.splice(idx,1);
-      if(masterData.departments.length===0) masterData.departments.push({name:'',extNo:''});
-      renderMasterData();
-    }
-    return;
-  }
-  if(e.target.closest('#mdSaveBtn')) saveMasterData();
-}
-
-async function saveMasterData(){
-  if(!CAP.db){ toast('มุมมองนี้ยังไม่เชื่อมต่อฐานข้อมูลกลาง จึงบันทึกไม่ได้','error'); return; }
-  masterData.departments = (masterData.departments||[]).filter(d=> (d.name||'').trim() || (d.extNo||'').trim());
-  if(masterData.departments.length===0) masterData.departments.push({name:'',extNo:''});
-  const btn = document.getElementById('mdSaveBtn');
-  if(btn){ btn.disabled = true; btn.innerHTML = 'กำลังบันทึก...'; }
-  try{
-    await CAP.db.doc('settings/masterData').set(masterData);
-    populateDeptDatalist();
-    toast('บันทึกข้อมูลหลักเรียบร้อยแล้ว','success');
-  }catch(e){
-    toast('บันทึกข้อมูลหลักไม่สำเร็จ กรุณาลองใหม่','error');
-  }finally{
-    renderMasterData();
-  }
-}
-
-document.getElementById('view-masterdata').addEventListener('input', onMasterDataInput);
-document.getElementById('view-masterdata').addEventListener('click', onMasterDataClick);
 
 // ---------- boot ----------
 navTo('gallery');
