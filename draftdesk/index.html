@@ -2203,6 +2203,20 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(scheduleFi
   });
 })();
 
+// Safety net for the "นำเข้าด้วย AI" drag-and-drop dropzone (shared by every
+// document type — see setupAiImportModal below): the dropzone box itself
+// calls preventDefault() correctly, but a real drag gesture very often
+// overshoots that small target and lands on the modal overlay/backdrop or
+// the page behind it instead. Without a page-wide preventDefault, THAT drop
+// falls through to the browser's own default action — navigating the whole
+// tab away to display the dropped file — which reads as "dropping a file
+// just doesn't work" (and does it identically for every doc type, since
+// they all share this one modal). Blocking the default at the window level
+// makes an off-target drop a harmless no-op instead, while the dropzone's
+// own listeners (registered separately) still handle a well-aimed drop.
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => e.preventDefault());
+
 function bindFormPane(){
   const el = document.getElementById('view-editor');
   el.addEventListener('input', onFieldInput);
@@ -2515,6 +2529,17 @@ function addAiImportFiles(fileList){
   ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); dropzone.classList.add('dragover'); }));
   ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); dropzone.classList.remove('dragover'); }));
   dropzone.addEventListener('drop', (e)=>{ if(e.dataTransfer && e.dataTransfer.files) addAiImportFiles(e.dataTransfer.files); });
+  // Also accept a drop anywhere on the dialog itself, not just the small
+  // dropzone rectangle inside it — real drag gestures rarely land pixel-
+  // perfect on a small target, and a miss used to fall through as a no-op
+  // (or worse, without the window-level guard above, navigate the tab away).
+  // Falls back gracefully when file-attach isn't offered (dropzone hidden).
+  ['dragenter','dragover'].forEach(evt => modal.addEventListener(evt, (e)=>{ if(!dropzone.hidden) e.preventDefault(); }));
+  modal.addEventListener('drop', (e)=>{
+    if(dropzone.hidden || e.target.closest('#aiImportDropzone')) return;
+    e.preventDefault();
+    if(e.dataTransfer && e.dataTransfer.files) addAiImportFiles(e.dataTransfer.files);
+  });
   document.getElementById('aiImportFileList').addEventListener('click', (e)=>{
     const b = e.target.closest('[data-remove-file]');
     if(!b) return;
