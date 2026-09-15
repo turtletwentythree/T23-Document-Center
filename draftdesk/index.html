@@ -2073,7 +2073,6 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
         <div id="formFields">${type.renderForm(editorState)}</div>
         <div class="sticky-actions">
           <button class="btn btn-primary" id="btnSaveDevice" type="button">${icon('download',15)} บันทึกลงเครื่อง</button>
-          <button class="btn btn-secondary" id="btnUploadDrive" type="button">${icon('upload',15)} อัปโหลดขึ้น Google Drive</button>
           <a class="btn btn-ghost" href="https://drive.google.com/drive/folders/1cXN6UYDYOu4oTGih1fFeviHs1gjJOsWG?usp=sharing" target="_blank" rel="noopener">${icon('ext',15)} เปิดโฟลเดอร์ Google Drive</a>
           <button class="btn btn-ghost" id="btnResetForm" type="button">${icon('trash',15)} ล้างฟอร์ม</button>
         </div>
@@ -2089,7 +2088,6 @@ function mountEditor(typeId, presetState, presetDocId, presetCreatedAt){
   el.querySelector('[data-back]').addEventListener('click', ()=> navTo('gallery'));
   bindFormPane();
   document.getElementById('btnSaveDevice').addEventListener('click', doSaveToDevice);
-  document.getElementById('btnUploadDrive').addEventListener('click', doUploadToDrive);
   document.getElementById('btnResetForm').addEventListener('click', async ()=>{
     const ok = await confirmDialog('ล้างข้อมูลในฟอร์มทั้งหมด รวมถึงติ๊กบ็อกและไฟล์ลายเซ็นที่แนบไว้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้', { title:'ล้างฟอร์ม', okLabel:'ล้างข้อมูล' });
     if(ok) mountEditor(typeId);
